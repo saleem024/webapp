@@ -66,14 +66,19 @@ pipeline {
                     sh 'ssh -o  StrictHostKeyChecking=no ubuntu@18.205.233.12 "docker run -t owasp/zap2docker-stable zap-baseline.py -t http://54.234.14.90:8080/webapp/" || true'
                     }
             }
+       }
            stage ('Nikto Scan') {
 		    steps {
 			sh 'rm nikto-output.xml || true'
 			sh 'docker run --user $(id -u):$(id -g) --rm -v $(pwd):/report -i secfigo/nikto:latest -h 54.234.14.90 -p 8080 -output /report/nikto-output.xml'
 			sh 'cat nikto-output.xml'   
-		    }
+		   }
 	    }
-        }
-    
-  }
+	/*stage ('SSL Checks') {
+		    steps {
+		        sh 'docker run --rm -i nablac0d3/sslyze:5.0.0  13.126.160.117:8443 --json_out=results.json || true'
+		    }
+	    }*/
+    }
 }
+	    
